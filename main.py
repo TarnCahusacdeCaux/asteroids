@@ -10,6 +10,9 @@ from shot import Shot
 def main() -> None:
     pygame.init()
 
+    bg = pygame.image.load("background_image.jpg")
+    asteroid_image = pygame.image.load("asteroid_image.png")
+
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
@@ -25,10 +28,6 @@ def main() -> None:
     clock = pygame.time.Clock()
     dt = 0
     screen = pygame.display.set_mode(size=(SCREEN_WIDTH, SCREEN_HEIGHT))
-
-    print("Starting Asteroids!")
-    print(f"Screen width: {SCREEN_WIDTH}")
-    print(f"Screen height: {SCREEN_HEIGHT}")
 
     while True:
         for event in pygame.event.get():
@@ -46,7 +45,7 @@ def main() -> None:
                     shot.kill()
                     asteroid.split()
 
-        screen.fill(color="black")
+        screen.blit(bg, (0, 0))
 
         for item in drawable:
             item.draw(screen)

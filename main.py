@@ -10,6 +10,13 @@ from shot import Shot
 def main() -> None:
     pygame.init()
 
+    pygame.display.set_caption(title="Asteroids")
+
+    font = pygame.font.SysFont(name="Comic Sans MS", size=100)
+
+    points: int = 0
+    points_text = font.render(str(points), False, (255, 255, 255))
+
     bg = pygame.image.load("background_image.jpg")
     asteroid_image = pygame.image.load("asteroid_image.png")
 
@@ -42,10 +49,14 @@ def main() -> None:
 
             for shot in shots:
                 if shot.check_collisions(other=asteroid):
+                    points += 1
                     shot.kill()
                     asteroid.split()
 
         screen.blit(bg, (0, 0))
+
+        points_text = font.render(str(points), False, (255, 255, 255))
+        screen.blit(points_text, (0, 0))
 
         for item in drawable:
             item.draw(screen)

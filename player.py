@@ -11,6 +11,7 @@ class Player(CircleShape):
         self.x = x
         self.y = y
         self.timer: float = 0
+        # self.image = pygame.image.load("player_image.")
 
     def draw(self, screen):
         player_body = pygame.draw.polygon(screen, "white", self.triangle(), 2)

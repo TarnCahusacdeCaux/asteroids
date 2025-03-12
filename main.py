@@ -14,9 +14,6 @@ def main() -> None:
 
     font = pygame.font.SysFont(name="Comic Sans MS", size=100)
 
-    points: int = 0
-    points_text = font.render(str(points), False, (255, 255, 255))
-
     bg = pygame.image.load("background_image.jpg")
     asteroid_image = pygame.image.load("asteroid_image.png")
 
@@ -34,6 +31,7 @@ def main() -> None:
     asteroid_field = AsteroidField()
     clock = pygame.time.Clock()
     dt = 0
+    points: int = 0
     screen = pygame.display.set_mode(size=(SCREEN_WIDTH, SCREEN_HEIGHT))
 
     while True:

@@ -1,21 +1,56 @@
 import pygame
 import random
 from circleshape import CircleShape
-from constants import ASTEROID_MIN_RADIUS
+from constants import *
 
 
 class Asteroid(CircleShape):
     def __init__(self, x: int, y: int, radius: int) -> None:
         super().__init__(x, y, radius)
+        self.image = pygame.image.load("asteroid_image.png")
 
     def draw(self, screen) -> None:
-        pygame.draw.circle(
+        asteroid_body = pygame.draw.circle(
             surface=screen,
             color="#563209",
             center=self.position,
             radius=self.radius,
             width=100,
         )
+
+        size = self.image.get_size()
+
+        if self.radius >= ASTEROID_MAX_RADIUS:
+            sized_image = pygame.transform.scale(
+                self.image, (int(size[0] // 2), int(size[1] // 2))
+            )
+            image_position = (
+                asteroid_body[0] - 20,
+                asteroid_body[1],
+                asteroid_body[2] - 20,
+                asteroid_body[3],
+            )
+        elif self.radius <= ASTEROID_MIN_RADIUS:
+            sized_image = pygame.transform.scale(
+                self.image, (int(size[0] / 6), int(size[1] / 6))
+            )
+            image_position = (
+                asteroid_body[0] - 8,
+                asteroid_body[1] - 3,
+                asteroid_body[2] - 8,
+                asteroid_body[3] - 3,
+            )
+        else:
+            sized_image = pygame.transform.scale(
+                self.image, (int(size[0] // 3), int(size[1] // 3))
+            )
+            image_position = (
+                asteroid_body[0] - 8,
+                asteroid_body[1] - 3,
+                asteroid_body[2] - 8,
+                asteroid_body[3] - 3,
+            )
+        screen.blit(sized_image, image_position)
 
     def update(self, dt) -> None:
         self.position += self.velocity * dt

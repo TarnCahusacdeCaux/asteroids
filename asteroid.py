@@ -10,11 +10,11 @@ class Asteroid(CircleShape):
         self.image = pygame.image.load("asteroid_image.png")
 
     def draw(self, screen) -> None:
-        size = self.image.get_size()
+        image_size = self.image.get_size()
 
         if self.radius >= ASTEROID_MAX_RADIUS:
             sized_image = pygame.transform.scale(
-                self.image, (int(size[0] // 2), int(size[1] // 2))
+                self.image, (int(image_size[0] // 2), int(image_size[1] // 2))
             )
             image_position = (
                 self.position[0] - 75,
@@ -24,7 +24,7 @@ class Asteroid(CircleShape):
             )
         elif self.radius <= ASTEROID_MIN_RADIUS:
             sized_image = pygame.transform.scale(
-                self.image, (int(size[0] / 6), int(size[1] / 6))
+                self.image, (int(image_size[0] / 6), int(image_size[1] / 6))
             )
             image_position = (
                 self.position[0] - 30,
@@ -34,7 +34,7 @@ class Asteroid(CircleShape):
             )
         else:
             sized_image = pygame.transform.scale(
-                self.image, (int(size[0] // 3), int(size[1] // 3))
+                self.image, (int(image_size[0] // 3), int(image_size[1] // 3))
             )
             image_position = (
                 self.position[0] - 50,

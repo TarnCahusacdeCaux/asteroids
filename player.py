@@ -11,10 +11,15 @@ class Player(CircleShape):
         self.x = x
         self.y = y
         self.timer: float = 0
-        # self.image = pygame.image.load("player_image.")
+        self.image = pygame.image.load("player_image.png")
+        self.image_size = self.image.get_size()
+        self.sized_image = pygame.transform.scale(
+            self.image, (int(self.image_size[0] / 35), int(self.image_size[1] / 35))
+        )
 
     def draw(self, screen):
         player_body = pygame.draw.polygon(screen, "white", self.triangle(), 2)
+        screen.blit(self.sized_image, player_body)
 
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)

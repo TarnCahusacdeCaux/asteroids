@@ -11,15 +11,15 @@ class Player(CircleShape):
         self.x = x
         self.y = y
         self.timer: float = 0
-        self.image = pygame.image.load("player_image.png")
-        self.image_size = self.image.get_size()
-        self.sized_image = pygame.transform.scale(
-            self.image, (int(self.image_size[0] / 35), int(self.image_size[1] / 35))
-        )
+        # self.image = pygame.image.load("player_image.png")
+        # self.image_size = self.image.get_size()
+        # self.sized_image = pygame.transform.scale(
+        #     self.image, (int(self.image_size[0] / 35), int(self.image_size[1] / 35))
+        # )
 
     def draw(self, screen):
         player_body = pygame.draw.polygon(screen, "white", self.triangle(), 2)
-        screen.blit(self.sized_image, player_body)
+        # screen.blit(self.sized_image, player_body)
 
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -41,10 +41,12 @@ class Player(CircleShape):
             self.rotate(-dt)
         if keys[pygame.K_d]:
             self.rotate(dt)
-        if keys[pygame.K_b]:
+        if keys[pygame.K_LSHIFT]:
             self.boost(dt)
         if keys[pygame.K_SPACE]:
             self.shoot()
+        if keys[pygame.K_l]:
+            self.burst_shot()
 
     def rotate(self, dt):
         self.rotation += PLAYER_TURN_SPEED * dt
@@ -63,3 +65,14 @@ class Player(CircleShape):
         self.timer = PLAYER_SHOOT_COOLDOWN
         shot = Shot(x=self.position.x, y=self.position.y, radius=SHOT_RADIUS)
         shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOT_SPEED
+
+    def burst_shot(self):
+        if self.timer > 0:
+            return
+        if -1 < self.timer < 0:
+            self.timer = 0
+        else:
+            self.timer = PLAYER_LAZER_COOLDOWN
+
+        lazer = Shot(x=self.position.x, y=self.position.y, radius=SHOT_RADIUS)
+        lazer.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOT_SPEED

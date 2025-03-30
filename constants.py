@@ -14,3 +14,5 @@ PLAYER_BOOST_SPEED: int = 200
 SHOT_RADIUS: int = 5
 PLAYER_SHOT_SPEED: int = 500
 PLAYER_SHOOT_COOLDOWN: float = 0.3  # seconds
+
+PLAYER_LAZER_COOLDOWN: float = 0.01  # seconds

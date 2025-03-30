@@ -7,7 +7,7 @@ from constants import *
 class Asteroid(CircleShape):
     def __init__(self, x: int, y: int, radius: int) -> None:
         super().__init__(x, y, radius)
-        self.image = pygame.image.load("asteroid_image.png")
+        self.image = pygame.image.load("images/asteroid_image.png")
 
     def draw(self, screen) -> None:
         image_size = self.image.get_size()

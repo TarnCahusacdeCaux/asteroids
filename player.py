@@ -2,6 +2,7 @@ import pygame
 from constants import *
 from circleshape import CircleShape
 from shot import Shot
+from shield import Shield
 
 
 class Player(CircleShape):
@@ -12,14 +13,16 @@ class Player(CircleShape):
         self.y = y
         self.shot_timer: float = 0
         self.mine_timer: float = 0
-        # self.image = pygame.image.load("player_image.png")
+        self.shield_timer: float = 0
+        self.teleport_timer: float = 0
+        # self.image = pygame.image.load("images/player_image.png")
         # self.image_size = self.image.get_size()
         # self.sized_image = pygame.transform.scale(
         #     self.image, (int(self.image_size[0] / 35), int(self.image_size[1] / 35))
         # )
 
     def draw(self, screen):
-        player_body = pygame.draw.polygon(screen, "white", self.triangle(), 2)
+        pygame.draw.polygon(screen, "white", self.triangle(), 2)
         # screen.blit(self.sized_image, player_body)
 
     def triangle(self):
@@ -33,6 +36,8 @@ class Player(CircleShape):
     def update(self, dt):
         self.shot_timer -= dt
         self.mine_timer -= dt
+        self.shield_timer -= dt
+        self.teleport_timer -= dt
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_w]:
@@ -44,13 +49,17 @@ class Player(CircleShape):
         if keys[pygame.K_d]:
             self.rotate(dt)
         if keys[pygame.K_LSHIFT]:
-            self.boost(dt)
+            self.move(dt * 1.5)
         if keys[pygame.K_h]:
             self.shoot()
         if keys[pygame.K_k]:
             self.mine()
         if keys[pygame.K_j]:
             self.scatter_shot()
+        if keys[pygame.K_l]:
+            self.shield()
+        if keys[pygame.K_g]:
+            self.teleport()
 
     def rotate(self, dt):
         self.rotation += PLAYER_TURN_SPEED * dt
@@ -58,10 +67,6 @@ class Player(CircleShape):
     def move(self, dt):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         self.position += forward * PLAYER_SPEED * dt
-
-    def boost(self, dt):
-        dash = pygame.Vector2(0, 1).rotate(self.rotation)
-        self.position += dash * PLAYER_BOOST_SPEED * dt
 
     def shoot(self):
         if self.shot_timer > 0:
@@ -75,7 +80,7 @@ class Player(CircleShape):
             return
         self.mine_timer = PLAYER_MINE_COOLDOWN
 
-        shot = Shot(x=self.position.x, y=self.position.y, radius=MINE_RADIUS)
+        Shot(x=self.position.x, y=self.position.y, radius=MINE_RADIUS)
 
     def scatter_shot(self):
         if self.shot_timer > 0:
@@ -94,3 +99,18 @@ class Player(CircleShape):
         shot3.velocity = (
             pygame.Vector2(0.25, 1).rotate(self.rotation) * PLAYER_SCATTER_SHOT_SPEED
         )
+
+    def shield(self):
+        if self.shield_timer > 0:
+            return
+        self.shield_timer = PLAYER_SHIELD_COOLDOWN
+
+        shield = Shield(x=self.position.x, y=self.position.y, radius=SHIELD_RADIUS)
+        shield.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * 0
+
+    def teleport(self):
+        if self.teleport_timer > 0:
+            return
+        self.teleport_timer = PLAYER_TELEPORT_COOLDOWN
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        self.position += forward * 200

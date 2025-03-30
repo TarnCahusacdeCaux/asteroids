@@ -5,6 +5,7 @@ from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
+from shield import Shield
 from highscore import save_highscore, read_highscore
 
 
@@ -16,18 +17,19 @@ def main() -> None:
     title_font = pygame.font.SysFont(name="Comic Sans MS", size=200)
     points_font = pygame.font.SysFont(name="Comic Sans MS", size=50)
 
-    bg = pygame.image.load("background_image.jpg")
-    asteroid_image = pygame.image.load("asteroid_image.png")
+    bg = pygame.image.load("images/background_image.jpg")
 
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
+    shields = pygame.sprite.Group()
 
     Player.containers = (updatable, drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = updatable
     Shot.containers = (shots, updatable, drawable)
+    Shield.containers = (shields, updatable, drawable)
 
     player = Player(x=SCREEN_WIDTH / 2, y=SCREEN_HEIGHT / 2)
     asteroid_field = AsteroidField()
@@ -37,6 +39,7 @@ def main() -> None:
     points: int = 0
     highscore: str = read_highscore()
     collision: bool = False
+    shield_health: int = 3
 
     while True:
         for event in pygame.event.get():
@@ -72,6 +75,16 @@ def main() -> None:
                     points += 1
                     shot.kill()
                     asteroid.split()
+
+            for shield in shields:
+                if shield.check_collisions(other=asteroid):
+                    points += 1
+                    if shield_health < 0:
+                        shield.kill()
+                        shield_health = 3
+
+                    asteroid.split()
+                    shield_health -= 1
 
         if collision:
             break

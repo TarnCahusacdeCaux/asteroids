@@ -1,3 +1,4 @@
+import os
 import sys
 import pygame
 from constants import *
@@ -12,12 +13,18 @@ from highscore import save_highscore, read_highscore
 def main() -> None:
     pygame.init()
 
+    if getattr(sys, "frozen", False):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+
+    bg_image_path = os.path.join(base_path, "images", "background_image.jpg")
+    bg = pygame.image.load(bg_image_path)
+
     pygame.display.set_caption(title="Asteroids")
 
     title_font = pygame.font.SysFont(name="Comic Sans MS", size=200)
     points_font = pygame.font.SysFont(name="Comic Sans MS", size=50)
-
-    bg = pygame.image.load("images/background_image.jpg")
 
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()

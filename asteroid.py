@@ -1,3 +1,5 @@
+import os
+import sys
 import pygame
 import random
 from circleshape import CircleShape
@@ -7,7 +9,14 @@ from constants import *
 class Asteroid(CircleShape):
     def __init__(self, x: int, y: int, radius: int) -> None:
         super().__init__(x, y, radius)
-        self.image = pygame.image.load("images/asteroid_image.png")
+
+        if getattr(sys, "frozen", False):
+            base_path = sys._MEIPASS
+        else:
+            base_path = os.path.dirname(os.path.abspath(__file__))
+
+        asteroid_image_path = os.path.join(base_path, "images", "asteroid_image.png")
+        self.image = pygame.image.load(asteroid_image_path)
 
     def draw(self, screen) -> None:
         image_size = self.image.get_size()

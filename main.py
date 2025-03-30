@@ -40,6 +40,7 @@ def main() -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
+
         updatable.update(dt)
 
         for asteroid in asteroids:
@@ -59,11 +60,11 @@ def main() -> None:
         screen.blit(bg, (0, 0))
 
         highscore_text = font.render(
-            "Highscore: " + str(highscore), False, (255, 255, 255)
+            "Highscore: " + str(highscore), False, (255, 215, 0)
         )
         screen.blit(highscore_text, (0, 0))
 
-        points_text = font.render("Points: " + str(points), False, (255, 255, 255))
+        points_text = font.render("Points: " + str(points), False, (155, 155, 155))
         screen.blit(points_text, (0, 50))
 
         for item in drawable:

@@ -46,7 +46,7 @@ class Player(CircleShape):
         if keys[pygame.K_SPACE]:
             self.shoot()
         if keys[pygame.K_l]:
-            self.burst_shot()
+            self.scatter_shot()
 
     def rotate(self, dt):
         self.rotation += PLAYER_TURN_SPEED * dt
@@ -66,13 +66,20 @@ class Player(CircleShape):
         shot = Shot(x=self.position.x, y=self.position.y, radius=SHOT_RADIUS)
         shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOT_SPEED
 
-    def burst_shot(self):
+    def scatter_shot(self):
         if self.timer > 0:
             return
-        if -1 < self.timer < 0:
-            self.timer = 0
-        else:
-            self.timer = PLAYER_LAZER_COOLDOWN
 
-        lazer = Shot(x=self.position.x, y=self.position.y, radius=SHOT_RADIUS)
-        lazer.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOT_SPEED
+        self.timer = PLAYER_SCATTER_SHOT_COOLDOWN
+        shot1 = Shot(x=self.position.x, y=self.position.y, radius=SHOT_RADIUS)
+        shot2 = Shot(x=self.position.x, y=self.position.y, radius=SHOT_RADIUS)
+        shot3 = Shot(x=self.position.x, y=self.position.y, radius=SHOT_RADIUS)
+        shot1.velocity = (
+            pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SCATTER_SHOT_SPEED
+        )
+        shot2.velocity = (
+            pygame.Vector2(-0.25, 1).rotate(self.rotation) * PLAYER_SCATTER_SHOT_SPEED
+        )
+        shot3.velocity = (
+            pygame.Vector2(0.25, 1).rotate(self.rotation) * PLAYER_SCATTER_SHOT_SPEED
+        )

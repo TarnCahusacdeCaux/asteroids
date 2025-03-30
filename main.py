@@ -35,7 +35,9 @@ def main() -> None:
     asteroid_field = AsteroidField()
     clock = pygame.time.Clock()
     dt = 0
-    screen = pygame.display.set_mode(size=(SCREEN_WIDTH, SCREEN_HEIGHT))
+    screen = pygame.display.set_mode(
+        (0, 0), pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF
+    )
     points: int = 0
     highscore: str = read_highscore()
     collision: bool = False
@@ -48,6 +50,8 @@ def main() -> None:
 
         if pygame.key.get_pressed()[pygame.K_SPACE]:
             break
+        if pygame.key.get_pressed()[pygame.K_q]:
+            sys.exit()
 
         screen.blit(bg, (0, 0))
 
@@ -79,9 +83,9 @@ def main() -> None:
             for shield in shields:
                 if shield.check_collisions(other=asteroid):
                     points += 1
-                    if shield_health < 0:
+                    if shield_health < 2:
                         shield.kill()
-                        shield_health = 3
+                        shield_health = 4
 
                     asteroid.split()
                     shield_health -= 1
@@ -113,10 +117,12 @@ def main() -> None:
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return
+                sys.exit()
 
         if pygame.key.get_pressed()[pygame.K_SPACE]:
             main()
+        if pygame.key.get_pressed()[pygame.K_q]:
+            sys.exit()
 
         screen.blit(bg, (0, 0))
 

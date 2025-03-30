@@ -13,7 +13,8 @@ def main() -> None:
 
     pygame.display.set_caption(title="Asteroids")
 
-    font = pygame.font.SysFont(name="Comic Sans MS", size=50)
+    title_font = pygame.font.SysFont(name="Comic Sans MS", size=200)
+    points_font = pygame.font.SysFont(name="Comic Sans MS", size=50)
 
     bg = pygame.image.load("background_image.jpg")
     asteroid_image = pygame.image.load("asteroid_image.png")
@@ -35,21 +36,36 @@ def main() -> None:
     screen = pygame.display.set_mode(size=(SCREEN_WIDTH, SCREEN_HEIGHT))
     points: int = 0
     highscore: str = read_highscore()
+    collision: bool = False
 
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return
+                sys.exit()
 
-        updatable.update(dt)
+        if pygame.key.get_pressed()[pygame.K_SPACE]:
+            break
+
+        screen.blit(bg, (0, 0))
+
+        title = title_font.render("ASTEROIDS", False, (255, 255, 255))
+        screen.blit(title, (SCREEN_WIDTH / 5.5, SCREEN_HEIGHT / 5))
+
+        title = points_font.render("PRESS SPACE TO START", False, (255, 255, 255))
+        screen.blit(title, (SCREEN_WIDTH / 3, SCREEN_HEIGHT / 2))
+
+        pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
 
         for asteroid in asteroids:
             if player.check_collisions(other=asteroid):
                 if points > int(highscore):
                     save_highscore(points)
-
-                print("Game over!")
-                sys.exit()
+                collision = True
 
             for shot in shots:
                 if shot.check_collisions(other=asteroid):
@@ -57,15 +73,22 @@ def main() -> None:
                     shot.kill()
                     asteroid.split()
 
+        if collision:
+            break
+
         screen.blit(bg, (0, 0))
 
-        highscore_text = font.render(
+        highscore_text = points_font.render(
             "Highscore: " + str(highscore), False, (255, 215, 0)
         )
         screen.blit(highscore_text, (0, 0))
 
-        points_text = font.render("Points: " + str(points), False, (155, 155, 155))
+        points_text = points_font.render(
+            "Points: " + str(points), False, (155, 155, 155)
+        )
         screen.blit(points_text, (0, 50))
+
+        updatable.update(dt)
 
         for item in drawable:
             item.draw(screen)
@@ -73,6 +96,24 @@ def main() -> None:
         pygame.display.flip()
 
         dt: float = clock.tick(60) / 1000
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return
+
+        if pygame.key.get_pressed()[pygame.K_SPACE]:
+            main()
+
+        screen.blit(bg, (0, 0))
+
+        title = title_font.render("GAME OVER!", False, (255, 255, 255))
+        screen.blit(title, (SCREEN_WIDTH / 6.5, SCREEN_HEIGHT / 6))
+
+        title = points_font.render("PRESS SPACE TO PLAY AGAIN", False, (255, 255, 255))
+        screen.blit(title, (SCREEN_WIDTH / 3.5, SCREEN_HEIGHT / 2))
+
+        pygame.display.flip()
 
 
 if __name__ == "__main__":

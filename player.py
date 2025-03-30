@@ -10,7 +10,8 @@ class Player(CircleShape):
         self.rotation = 0
         self.x = x
         self.y = y
-        self.timer: float = 0
+        self.shot_timer: float = 0
+        self.mine_timer: float = 0
         # self.image = pygame.image.load("player_image.png")
         # self.image_size = self.image.get_size()
         # self.sized_image = pygame.transform.scale(
@@ -30,7 +31,8 @@ class Player(CircleShape):
         return [a, b, c]
 
     def update(self, dt):
-        self.timer -= dt
+        self.shot_timer -= dt
+        self.mine_timer -= dt
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_w]:
@@ -43,9 +45,11 @@ class Player(CircleShape):
             self.rotate(dt)
         if keys[pygame.K_LSHIFT]:
             self.boost(dt)
-        if keys[pygame.K_SPACE]:
+        if keys[pygame.K_h]:
             self.shoot()
-        if keys[pygame.K_l]:
+        if keys[pygame.K_k]:
+            self.mine()
+        if keys[pygame.K_j]:
             self.scatter_shot()
 
     def rotate(self, dt):
@@ -60,17 +64,24 @@ class Player(CircleShape):
         self.position += dash * PLAYER_BOOST_SPEED * dt
 
     def shoot(self):
-        if self.timer > 0:
+        if self.shot_timer > 0:
             return
-        self.timer = PLAYER_SHOOT_COOLDOWN
+        self.shot_timer = PLAYER_SHOOT_COOLDOWN
         shot = Shot(x=self.position.x, y=self.position.y, radius=SHOT_RADIUS)
         shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOT_SPEED
 
+    def mine(self):
+        if self.mine_timer > 0:
+            return
+        self.mine_timer = PLAYER_MINE_COOLDOWN
+
+        shot = Shot(x=self.position.x, y=self.position.y, radius=MINE_RADIUS)
+
     def scatter_shot(self):
-        if self.timer > 0:
+        if self.shot_timer > 0:
             return
 
-        self.timer = PLAYER_SCATTER_SHOT_COOLDOWN
+        self.shot_timer = PLAYER_SCATTER_SHOT_COOLDOWN
         shot1 = Shot(x=self.position.x, y=self.position.y, radius=SHOT_RADIUS)
         shot2 = Shot(x=self.position.x, y=self.position.y, radius=SHOT_RADIUS)
         shot3 = Shot(x=self.position.x, y=self.position.y, radius=SHOT_RADIUS)

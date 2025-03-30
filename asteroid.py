@@ -12,35 +12,47 @@ class Asteroid(CircleShape):
     def draw(self, screen) -> None:
         image_size = self.image.get_size()
 
-        if self.radius >= ASTEROID_MAX_RADIUS:
+        if self.radius == ASTEROID_MAX_RADIUS:
             sized_image = pygame.transform.scale(
-                self.image, (int(image_size[0] // 2), int(image_size[1] // 2))
+                self.image,
+                (
+                    int(image_size[0] / (120 / ASTEROID_MAX_RADIUS)),
+                    int(image_size[1] / (120 / ASTEROID_MAX_RADIUS)),
+                ),
             )
             image_position = (
-                self.position[0] - 75,
-                self.position[1] - 65,
-                self.position[0] - 75,
-                self.position[1] - 65,
+                self.position[0] - ASTEROID_MAX_RADIUS * 1.25,
+                self.position[1] - ASTEROID_MAX_RADIUS * 1.08,
+                self.position[0] - ASTEROID_MAX_RADIUS * 1.25,
+                self.position[1] - ASTEROID_MAX_RADIUS * 1.08,
             )
-        elif self.radius <= ASTEROID_MIN_RADIUS:
+        elif self.radius == ASTEROID_MIN_RADIUS:
             sized_image = pygame.transform.scale(
-                self.image, (int(image_size[0] / 6), int(image_size[1] / 6))
+                self.image,
+                (
+                    int(image_size[0] / (120 / ASTEROID_MIN_RADIUS)),
+                    int(image_size[1] / (120 / ASTEROID_MIN_RADIUS)),
+                ),
             )
             image_position = (
-                self.position[0] - 30,
-                self.position[1] - 20,
-                self.position[0] - 30,
-                self.position[1] - 20,
+                self.position[0] - ASTEROID_MIN_RADIUS * 1.5,
+                self.position[1] - ASTEROID_MIN_RADIUS,
+                self.position[0] - ASTEROID_MIN_RADIUS * 1.5,
+                self.position[1] - ASTEROID_MIN_RADIUS,
             )
         else:
             sized_image = pygame.transform.scale(
-                self.image, (int(image_size[0] // 3), int(image_size[1] // 3))
+                self.image,
+                (
+                    int(image_size[0] / (120 / (ASTEROID_MIN_RADIUS * 2))),
+                    int(image_size[1] / (120 / (ASTEROID_MIN_RADIUS * 2))),
+                ),
             )
             image_position = (
-                self.position[0] - 50,
-                self.position[1] - 40,
-                self.position[0] - 50,
-                self.position[1] - 40,
+                self.position[0] - ASTEROID_MIN_RADIUS * 2.75,
+                self.position[1] - ASTEROID_MIN_RADIUS * 2.25,
+                self.position[0] - ASTEROID_MIN_RADIUS * 2.75,
+                self.position[1] - ASTEROID_MIN_RADIUS * 2.25,
             )
         screen.blit(sized_image, image_position)
 

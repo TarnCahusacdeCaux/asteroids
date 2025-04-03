@@ -1,6 +1,7 @@
 import os
 import sys
 import pygame
+import time
 from constants import *
 from player import Player
 from asteroid import Asteroid
@@ -8,6 +9,7 @@ from asteroidfield import AsteroidField
 from shot import Shot
 from shield import Shield
 from highscore import save_highscore, read_highscore
+from best_time import save_best_time, read_best_time
 
 
 def main() -> None:
@@ -39,7 +41,7 @@ def main() -> None:
     Shield.containers = (shields, updatable, drawable)
 
     player = Player(x=SCREEN_WIDTH / 2, y=SCREEN_HEIGHT / 2)
-    asteroid_field = AsteroidField()
+    AsteroidField()
     clock = pygame.time.Clock()
     dt = 0
     screen = pygame.display.set_mode(
@@ -49,6 +51,8 @@ def main() -> None:
     highscore: str = read_highscore()
     collision: bool = False
     shield_health: int = 3
+    start_time = time.time()
+    best_time = read_best_time()
 
     while True:
         for event in pygame.event.get():
@@ -79,6 +83,10 @@ def main() -> None:
             if player.check_collisions(other=asteroid):
                 if points > int(highscore):
                     save_highscore(points)
+
+                if time.time() - start_time > float(best_time):
+                    save_best_time(round(float(time.time() - start_time), 2))
+
                 collision = True
 
             for shot in shots:
@@ -101,6 +109,16 @@ def main() -> None:
             break
 
         screen.blit(bg, (0, 0))
+
+        time_text = points_font.render(
+            "Time: " + str(round(time.time() - start_time, 2)), False, (255, 255, 255)
+        )
+        screen.blit(time_text, (0, 150))
+
+        best_time_text = points_font.render(
+            "Best Time: " + best_time, False, (255, 255, 255)
+        )
+        screen.blit(best_time_text, (0, 100))
 
         highscore_text = points_font.render(
             "Highscore: " + str(highscore), False, (255, 215, 0)

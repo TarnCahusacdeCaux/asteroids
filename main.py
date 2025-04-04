@@ -2,8 +2,10 @@ import os
 import sys
 import pygame
 import time
+import math
 from constants import *
 from player import Player
+from alien import Alien
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
@@ -33,14 +35,17 @@ def main() -> None:
     asteroids = pygame.sprite.Group()
     shots = pygame.sprite.Group()
     shields = pygame.sprite.Group()
+    alien_group = pygame.sprite.Group()
 
     Player.containers = (updatable, drawable)
+    Alien.containers = (alien_group, drawable)
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = updatable
     Shot.containers = (shots, updatable, drawable)
     Shield.containers = (shields, updatable, drawable)
 
     player = Player(x=SCREEN_WIDTH / 2, y=SCREEN_HEIGHT / 2)
+    alien = Alien(x=SCREEN_WIDTH, y=SCREEN_HEIGHT)
     AsteroidField()
     clock = pygame.time.Clock()
     dt = 0
@@ -105,8 +110,33 @@ def main() -> None:
                     asteroid.split()
                     shield_health -= 1
 
+        for alien in alien_group:
+            for shot in shots:
+                if shot.check_collisions(other=alien):
+                    points += 10
+                    shot.kill()
+                    alien.kill()
+
+            for shield in shields:
+                if shield.check_collisions(other=alien):
+                    points += 10
+                    shield.kill()
+                    alien.kill()
+
+        if player.check_collisions(other=alien):
+            collision = True
+
         if collision:
             break
+
+        dx = player.position.x - alien.position.x
+        dy = player.position.y - alien.position.y
+        length = math.sqrt(dx**2 + dy**2)
+        if length > PLAYER_RADIUS + ALIEN_RADIUS:
+            dx = (dx / length) * 3.5
+            dy = (dy / length) * 3.5
+
+        alien_group.update(dt, dx, dy)
 
         screen.blit(bg, (0, 0))
 

@@ -33,7 +33,7 @@ class Player(CircleShape):
         c = self.position - forward * self.radius + right
         return [a, b, c]
 
-    def update(self, dt):
+    def update(self, dt, dx=0, dy=0):
         self.shot_timer -= dt
         self.mine_timer -= dt
         self.shield_timer -= dt

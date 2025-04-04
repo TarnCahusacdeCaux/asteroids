@@ -30,7 +30,7 @@ def main() -> None:
 
     title_font = pygame.font.SysFont(name="Comic Sans MS", size=200)
     points_font = pygame.font.SysFont(name="Comic Sans MS", size=50)
-    instructions_font = pygame.font.SysFont(name="Comic Sans MS", size=30)
+    controls_font = pygame.font.SysFont(name="Comic Sans MS", size=30)
 
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
@@ -56,12 +56,12 @@ def main() -> None:
         (0, 0), pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF
     )
     points: int = 0
-    highscore: str = read_highscore()
+    highscore: int = int(read_highscore())
     collision: bool = False
     shield_health: int = SHIELD_HEALTH
     alien_health: int = ALIEN_HEALTH
-    start_time = time.time()
-    best_time = read_best_time()
+    start_time: float = time.time()
+    best_time: float = float(read_best_time())
 
     while True:
         for event in pygame.event.get():
@@ -81,12 +81,12 @@ def main() -> None:
         sub_title = points_font.render("PRESS SPACE TO START", False, (255, 0, 0))
         screen.blit(sub_title, (SCREEN_WIDTH / 3, 300))
 
-        instructions = instructions_font.render(
+        controls = controls_font.render(
             "MOVEMENT: w a s d      TELEPORT: g      SHOOT: h      SCATTER SHOT: j      PLACE MINE: k      SHIELD: l",
             False,
             (255, 255, 0),
         )
-        screen.blit(instructions, (150, 450))
+        screen.blit(controls, (150, 450))
 
         pygame.display.flip()
 
@@ -115,6 +115,17 @@ def main() -> None:
                     asteroid.split()
                     shield_health -= 1
 
+            for alien in aliens:
+                if alien.check_collisions(other=asteroid):
+                    asteroid.split()
+
+                    if alien_health < 2:
+                        points += 10
+                        alien.kill()
+                        alien_health = ALIEN_HEALTH + 1
+
+                    alien_health -= 1
+
         for alien in aliens:
             dx = player.position.x - alien.position.x
             dy = player.position.y - alien.position.y
@@ -130,40 +141,44 @@ def main() -> None:
 
             for shot in shots:
                 if shot.check_collisions(other=alien):
-                    points += 10
                     shot.kill()
 
                     if alien_health < 2:
+                        points += 10
                         alien.kill()
-                        alien_health = 4
+                        alien_health = ALIEN_HEALTH + 1
 
                     alien_health -= 1
 
             for shield in shields:
                 if shield.check_collisions(other=alien):
-                    points += 10
-
                     if alien_health < 2:
+                        points += 10
                         alien.kill()
-                        alien_health = 4
+                        alien_health = ALIEN_HEALTH + 1
 
                     alien_health -= 1
 
                     if shield_health < 2:
                         shield.kill()
-                        shield_health = 4
+                        shield_health = SHIELD_HEALTH + 1
 
                     shield_health -= 1
 
         if collision:
-            if points > int(highscore):
+            if points > highscore:
                 save_highscore(points)
 
-            if time.time() - start_time > float(best_time):
-                save_best_time(round(float(time.time() - start_time), 2))
+            if time.time() - start_time > best_time:
+                save_best_time(round(time.time() - start_time, 2))
             break
 
         screen.blit(bg, (0, 0))
+
+        updatable.update(dt)
+
+        for item in drawable:
+            item.draw(screen)
 
         time_text = points_font.render(
             "Time: " + str(round(time.time() - start_time, 2)), False, (255, 255, 255)
@@ -171,7 +186,7 @@ def main() -> None:
         screen.blit(time_text, (0, 150))
 
         best_time_text = points_font.render(
-            "Best Time: " + best_time, False, (255, 255, 255)
+            "Best Time: " + str(best_time), False, (255, 255, 255)
         )
         screen.blit(best_time_text, (0, 100))
 
@@ -184,11 +199,6 @@ def main() -> None:
             "Points: " + str(points), False, (155, 155, 155)
         )
         screen.blit(points_text, (0, 50))
-
-        updatable.update(dt)
-
-        for item in drawable:
-            item.draw(screen)
 
         pygame.display.flip()
 

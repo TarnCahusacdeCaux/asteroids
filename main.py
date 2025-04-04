@@ -30,6 +30,7 @@ def main() -> None:
 
     title_font = pygame.font.SysFont(name="Comic Sans MS", size=200)
     points_font = pygame.font.SysFont(name="Comic Sans MS", size=50)
+    instructions_font = pygame.font.SysFont(name="Comic Sans MS", size=30)
 
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
@@ -78,8 +79,15 @@ def main() -> None:
         title = title_font.render("ASTEROIDS", False, (255, 255, 255))
         screen.blit(title, (SCREEN_WIDTH / 5.5, SCREEN_HEIGHT / 5))
 
-        title = points_font.render("PRESS SPACE TO START", False, (255, 255, 255))
-        screen.blit(title, (SCREEN_WIDTH / 3, SCREEN_HEIGHT / 2))
+        sub_title = points_font.render("PRESS SPACE TO START", False, (255, 0, 0))
+        screen.blit(sub_title, (SCREEN_WIDTH / 3, 300))
+
+        instructions = instructions_font.render(
+            "MOVEMENT: w a s d      TELEPORT: g      SHOOT: h      SCATTER SHOT: j      PLACE MINE: k      SHIELD: l",
+            False,
+            (255, 255, 0),
+        )
+        screen.blit(instructions, (150, 450))
 
         pygame.display.flip()
 

@@ -58,7 +58,8 @@ def main() -> None:
     points: int = 0
     highscore: str = read_highscore()
     collision: bool = False
-    shield_health: int = 3
+    shield_health: int = SHIELD_HEALTH
+    alien_health: int = ALIEN_HEALTH
     start_time = time.time()
     best_time = read_best_time()
 
@@ -130,13 +131,23 @@ def main() -> None:
                 if shot.check_collisions(other=alien):
                     points += 10
                     shot.kill()
-                    alien.kill()
+
+                    if alien_health < 2:
+                        alien.kill()
+                        alien_health = 4
+
+                    alien_health -= 1
 
             for shield in shields:
                 if shield.check_collisions(other=alien):
                     points += 10
                     shield.kill()
-                    alien.kill()
+
+                    if alien_health < 2:
+                        alien.kill()
+                        alien_health = 4
+
+                    alien_health -= 1
 
         if collision:
             break

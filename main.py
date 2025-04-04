@@ -142,13 +142,18 @@ def main() -> None:
             for shield in shields:
                 if shield.check_collisions(other=alien):
                     points += 10
-                    shield.kill()
 
                     if alien_health < 2:
                         alien.kill()
                         alien_health = 4
 
                     alien_health -= 1
+
+                    if shield_health < 2:
+                        shield.kill()
+                        shield_health = 4
+
+                    shield_health -= 1
 
         if collision:
             if points > int(highscore):

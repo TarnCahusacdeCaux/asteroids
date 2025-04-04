@@ -16,5 +16,5 @@ class Shield(CircleShape):
             width=2,
         )
 
-    def update(self, dt) -> None:
+    def update(self, dt, dx=0, dy=0) -> None:
         self.position += self.velocity * dt

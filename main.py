@@ -48,7 +48,6 @@ def main() -> None:
     Shield.containers = (shields, updatable, drawable)
 
     player = Player(x=SCREEN_WIDTH / 2, y=SCREEN_HEIGHT / 2)
-    alien = Alien(x=SCREEN_WIDTH, y=SCREEN_HEIGHT)
     Alien_field()
     AsteroidField()
     clock = pygame.time.Clock()
@@ -98,12 +97,6 @@ def main() -> None:
 
         for asteroid in asteroids:
             if player.check_collisions(other=asteroid):
-                if points > int(highscore):
-                    save_highscore(points)
-
-                if time.time() - start_time > float(best_time):
-                    save_best_time(round(float(time.time() - start_time), 2))
-
                 collision = True
 
             for shot in shots:
@@ -158,6 +151,11 @@ def main() -> None:
                     alien_health -= 1
 
         if collision:
+            if points > int(highscore):
+                save_highscore(points)
+
+            if time.time() - start_time > float(best_time):
+                save_best_time(round(float(time.time() - start_time), 2))
             break
 
         screen.blit(bg, (0, 0))
